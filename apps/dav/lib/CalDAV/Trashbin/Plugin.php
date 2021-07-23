@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * @copyright 2021 Christoph Wurst <christoph@winzerhof-wurst.at>
  *
- * @author 2021 Christoph Wurst <christoph@winzerhof-wurst.at>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -16,17 +16,20 @@ declare(strict_types=1);
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
 namespace OCA\DAV\CalDAV\Trashbin;
 
 use Closure;
+use DateTimeImmutable;
+use DateTimeInterface;
 use OCA\DAV\CalDAV\Calendar;
+use OCA\DAV\CalDAV\RetentionService;
 use OCP\IRequest;
 use Sabre\DAV\Exception\NotFound;
 use Sabre\DAV\INode;
@@ -41,15 +44,21 @@ use function implode;
 class Plugin extends ServerPlugin {
 	public const PROPERTY_DELETED_AT = '{http://nextcloud.com/ns}deleted-at';
 	public const PROPERTY_CALENDAR_URI = '{http://nextcloud.com/ns}calendar-uri';
+	public const PROPERTY_RETENTION_DURATION = '{http://nextcloud.com/ns}trash-bin-retention-duration';
 
 	/** @var bool */
 	private $disableTrashbin;
 
+	/** @var RetentionService */
+	private $retentionService;
+
 	/** @var Server */
 	private $server;
 
-	public function __construct(IRequest $request) {
+	public function __construct(IRequest $request,
+								RetentionService $retentionService) {
 		$this->disableTrashbin = $request->getHeader('X-NC-CalDAV-No-Trashbin') === '1';
+		$this->retentionService = $retentionService;
 	}
 
 	public function initialize(Server $server): void {
@@ -94,10 +103,22 @@ class Plugin extends ServerPlugin {
 		INode $node): void {
 		if ($node instanceof DeletedCalendarObject) {
 			$propFind->handle(self::PROPERTY_DELETED_AT, function () use ($node) {
-				return $node->getDeletedAt();
+				$ts = $node->getDeletedAt();
+				if ($ts === null) {
+					return null;
+				}
+
+				return (new DateTimeImmutable())
+					->setTimestamp($ts)
+					->format(DateTimeInterface::ATOM);
 			});
 			$propFind->handle(self::PROPERTY_CALENDAR_URI, function () use ($node) {
 				return $node->getCalendarUri();
+			});
+		}
+		if ($node instanceof TrashbinHome) {
+			$propFind->handle(self::PROPERTY_RETENTION_DURATION, function () use ($node) {
+				return $this->retentionService->getDuration();
 			});
 		}
 	}

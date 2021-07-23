@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2021 Joas Schilling <coding@schilljs.com>
  *
@@ -15,14 +16,13 @@ declare(strict_types=1);
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 namespace OCA\DAV\CardDAV\Activity;
 
 use OCA\DAV\CalDAV\Activity\Setting\CalDAVSetting;
@@ -39,7 +39,7 @@ class Setting extends CalDAVSetting {
 	 * @return string A translated string
 	 */
 	public function getName(): string {
-		return $this->l->t('A <strong>contact</strong> or <strong>addressbook</strong> was modified');
+		return $this->l->t('A <strong>contact</strong> or <strong>address book</strong> was modified');
 	}
 
 	/**

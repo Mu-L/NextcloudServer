@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
 {
     public static $prefixLengthsPsr4 = array (
-        'O' =>
+        'O' => 
         array (
             'OC\\Core\\' => 8,
             'OC\\' => 3,
@@ -16,15 +16,15 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
     );
 
     public static $prefixDirsPsr4 = array (
-        'OC\\Core\\' =>
+        'OC\\Core\\' => 
         array (
             0 => __DIR__ . '/../../..' . '/core',
         ),
-        'OC\\' =>
+        'OC\\' => 
         array (
             0 => __DIR__ . '/../../..' . '/lib/private',
         ),
-        'OCP\\' =>
+        'OCP\\' => 
         array (
             0 => __DIR__ . '/../../..' . '/lib/public',
         ),
@@ -39,6 +39,7 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OCP\\Accounts\\IAccount' => __DIR__ . '/../../..' . '/lib/public/Accounts/IAccount.php',
         'OCP\\Accounts\\IAccountManager' => __DIR__ . '/../../..' . '/lib/public/Accounts/IAccountManager.php',
         'OCP\\Accounts\\IAccountProperty' => __DIR__ . '/../../..' . '/lib/public/Accounts/IAccountProperty.php',
+        'OCP\\Accounts\\IAccountPropertyCollection' => __DIR__ . '/../../..' . '/lib/public/Accounts/IAccountPropertyCollection.php',
         'OCP\\Accounts\\PropertyDoesNotExistException' => __DIR__ . '/../../..' . '/lib/public/Accounts/PropertyDoesNotExistException.php',
         'OCP\\Activity\\ActivitySettings' => __DIR__ . '/../../..' . '/lib/public/Activity/ActivitySettings.php',
         'OCP\\Activity\\IConsumer' => __DIR__ . '/../../..' . '/lib/public/Activity/IConsumer.php',
@@ -92,6 +93,7 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OCP\\AppFramework\\Http\\Template\\LinkMenuAction' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/Template/LinkMenuAction.php',
         'OCP\\AppFramework\\Http\\Template\\PublicTemplateResponse' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/Template/PublicTemplateResponse.php',
         'OCP\\AppFramework\\Http\\Template\\SimpleMenuAction' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/Template/SimpleMenuAction.php',
+        'OCP\\AppFramework\\Http\\TextPlainResponse' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/TextPlainResponse.php',
         'OCP\\AppFramework\\Http\\TooManyRequestsResponse' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/TooManyRequestsResponse.php',
         'OCP\\AppFramework\\Http\\ZipResponse' => __DIR__ . '/../../..' . '/lib/public/AppFramework/Http/ZipResponse.php',
         'OCP\\AppFramework\\IAppContainer' => __DIR__ . '/../../..' . '/lib/public/AppFramework/IAppContainer.php',
@@ -204,12 +206,14 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OCP\\DB\\QueryBuilder\\IQueryFunction' => __DIR__ . '/../../..' . '/lib/public/DB/QueryBuilder/IQueryFunction.php',
         'OCP\\DB\\Types' => __DIR__ . '/../../..' . '/lib/public/DB/Types.php',
         'OCP\\Dashboard\\Exceptions\\DashboardAppNotAvailableException' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Exceptions/DashboardAppNotAvailableException.php',
+        'OCP\\Dashboard\\IAPIWidget' => __DIR__ . '/../../..' . '/lib/public/Dashboard/IAPIWidget.php',
         'OCP\\Dashboard\\IDashboardManager' => __DIR__ . '/../../..' . '/lib/public/Dashboard/IDashboardManager.php',
         'OCP\\Dashboard\\IDashboardWidget' => __DIR__ . '/../../..' . '/lib/public/Dashboard/IDashboardWidget.php',
         'OCP\\Dashboard\\IManager' => __DIR__ . '/../../..' . '/lib/public/Dashboard/IManager.php',
         'OCP\\Dashboard\\IWidget' => __DIR__ . '/../../..' . '/lib/public/Dashboard/IWidget.php',
         'OCP\\Dashboard\\Model\\IWidgetConfig' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/IWidgetConfig.php',
         'OCP\\Dashboard\\Model\\IWidgetRequest' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/IWidgetRequest.php',
+        'OCP\\Dashboard\\Model\\WidgetItem' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/WidgetItem.php',
         'OCP\\Dashboard\\Model\\WidgetSetting' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/WidgetSetting.php',
         'OCP\\Dashboard\\Model\\WidgetSetup' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/WidgetSetup.php',
         'OCP\\Dashboard\\Model\\WidgetTemplate' => __DIR__ . '/../../..' . '/lib/public/Dashboard/Model/WidgetTemplate.php',
@@ -396,6 +400,7 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OCP\\Group\\Events\\UserAddedEvent' => __DIR__ . '/../../..' . '/lib/public/Group/Events/UserAddedEvent.php',
         'OCP\\Group\\Events\\UserRemovedEvent' => __DIR__ . '/../../..' . '/lib/public/Group/Events/UserRemovedEvent.php',
         'OCP\\Group\\ISubAdmin' => __DIR__ . '/../../..' . '/lib/public/Group/ISubAdmin.php',
+        'OCP\\HintException' => __DIR__ . '/../../..' . '/lib/public/HintException.php',
         'OCP\\Http\\Client\\IClient' => __DIR__ . '/../../..' . '/lib/public/Http/Client/IClient.php',
         'OCP\\Http\\Client\\IClientService' => __DIR__ . '/../../..' . '/lib/public/Http/Client/IClientService.php',
         'OCP\\Http\\Client\\IResponse' => __DIR__ . '/../../..' . '/lib/public/Http/Client/IResponse.php',
@@ -610,7 +615,9 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OC\\Accounts\\Account' => __DIR__ . '/../../..' . '/lib/private/Accounts/Account.php',
         'OC\\Accounts\\AccountManager' => __DIR__ . '/../../..' . '/lib/private/Accounts/AccountManager.php',
         'OC\\Accounts\\AccountProperty' => __DIR__ . '/../../..' . '/lib/private/Accounts/AccountProperty.php',
+        'OC\\Accounts\\AccountPropertyCollection' => __DIR__ . '/../../..' . '/lib/private/Accounts/AccountPropertyCollection.php',
         'OC\\Accounts\\Hooks' => __DIR__ . '/../../..' . '/lib/private/Accounts/Hooks.php',
+        'OC\\Accounts\\TAccountsHelper' => __DIR__ . '/../../..' . '/lib/private/Accounts/TAccountsHelper.php',
         'OC\\Activity\\ActivitySettingsAdapter' => __DIR__ . '/../../..' . '/lib/private/Activity/ActivitySettingsAdapter.php',
         'OC\\Activity\\Event' => __DIR__ . '/../../..' . '/lib/private/Activity/Event.php',
         'OC\\Activity\\EventMerger' => __DIR__ . '/../../..' . '/lib/private/Activity/EventMerger.php',
@@ -713,8 +720,10 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OC\\Authentication\\Listeners\\RemoteWipeActivityListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/RemoteWipeActivityListener.php',
         'OC\\Authentication\\Listeners\\RemoteWipeEmailListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/RemoteWipeEmailListener.php',
         'OC\\Authentication\\Listeners\\RemoteWipeNotificationsListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/RemoteWipeNotificationsListener.php',
+        'OC\\Authentication\\Listeners\\UserDeletedFilesCleanupListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/UserDeletedFilesCleanupListener.php',
         'OC\\Authentication\\Listeners\\UserDeletedStoreCleanupListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/UserDeletedStoreCleanupListener.php',
         'OC\\Authentication\\Listeners\\UserDeletedTokenCleanupListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/UserDeletedTokenCleanupListener.php',
+        'OC\\Authentication\\Listeners\\UserDeletedWebAuthnCleanupListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/UserDeletedWebAuthnCleanupListener.php',
         'OC\\Authentication\\Listeners\\UserLoggedInListener' => __DIR__ . '/../../..' . '/lib/private/Authentication/Listeners/UserLoggedInListener.php',
         'OC\\Authentication\\LoginCredentials\\Credentials' => __DIR__ . '/../../..' . '/lib/private/Authentication/LoginCredentials/Credentials.php',
         'OC\\Authentication\\LoginCredentials\\Store' => __DIR__ . '/../../..' . '/lib/private/Authentication/LoginCredentials/Store.php',
@@ -1086,6 +1095,7 @@ class ComposerStaticInit53792487c5a8370acc0b06b1a864ff4c
         'OC\\Files\\Cache\\Propagator' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/Propagator.php',
         'OC\\Files\\Cache\\QuerySearchHelper' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/QuerySearchHelper.php',
         'OC\\Files\\Cache\\Scanner' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/Scanner.php',
+        'OC\\Files\\Cache\\SearchBuilder' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/SearchBuilder.php',
         'OC\\Files\\Cache\\Storage' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/Storage.php',
         'OC\\Files\\Cache\\StorageGlobal' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/StorageGlobal.php',
         'OC\\Files\\Cache\\Updater' => __DIR__ . '/../../..' . '/lib/private/Files/Cache/Updater.php',

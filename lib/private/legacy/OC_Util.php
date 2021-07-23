@@ -23,7 +23,7 @@
  * @author Individual IT Services <info@individual-it.net>
  * @author Jakob Sack <mail@jakobsack.de>
  * @author Joas Schilling <coding@schilljs.com>
- * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Julius Härtl <jus@bitgrid.net>
  * @author Kawohl <john@owncloud.com>
@@ -43,6 +43,7 @@
  * @author Stefan Weil <sw@weilnetz.de>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Thomas Tanghus <thomas@tanghus.net>
+ * @author Valdnet <47037905+Valdnet@users.noreply.github.com>
  * @author Victor Dubiniuk <dubiniuk@owncloud.com>
  * @author Vincent Petry <vincent@nextcloud.com>
  * @author Volkan Gezer <volkangezer@gmail.com>
@@ -768,7 +769,7 @@ class OC_Util {
 				$errors[] = [
 					'error' => $l->t('Cannot write into "apps" directory'),
 					'hint' => $l->t('This can usually be fixed by giving the webserver write access to the apps directory'
-						. ' or disabling the appstore in the config file.')
+						. ' or disabling the App Store in the config file.')
 				];
 			}
 		}
@@ -1214,7 +1215,7 @@ class OC_Util {
 
 		$fp = @fopen($testFile, 'w');
 		if (!$fp) {
-			throw new OC\HintException('Can\'t create test file to check for working .htaccess file.',
+			throw new \OCP\HintException('Can\'t create test file to check for working .htaccess file.',
 				'Make sure it is possible for the webserver to write to ' . $testFile);
 		}
 		fwrite($fp, $testContent);
@@ -1225,10 +1226,11 @@ class OC_Util {
 
 	/**
 	 * Check if the .htaccess file is working
+	 *
 	 * @param \OCP\IConfig $config
 	 * @return bool
 	 * @throws Exception
-	 * @throws \OC\HintException If the test file can't get written.
+	 * @throws \OCP\HintException If the test file can't get written.
 	 */
 	public function isHtaccessWorking(\OCP\IConfig $config) {
 		if (\OC::$CLI || !$config->getSystemValue('check_for_working_htaccess', true)) {
@@ -1422,7 +1424,7 @@ class OC_Util {
 	 *
 	 * @param \OC\SystemConfig $config
 	 * @return bool whether the core or any app needs an upgrade
-	 * @throws \OC\HintException When the upgrade from the given version is not allowed
+	 * @throws \OCP\HintException When the upgrade from the given version is not allowed
 	 */
 	public static function needUpgrade(\OC\SystemConfig $config) {
 		if ($config->getValue('installed', false)) {
@@ -1442,11 +1444,11 @@ class OC_Util {
 					return true;
 				} else {
 					// downgrade attempt, throw exception
-					throw new \OC\HintException('Downgrading is not supported and is likely to cause unpredictable issues (from ' . $installedVersion . ' to ' . $currentVersion . ')');
+					throw new \OCP\HintException('Downgrading is not supported and is likely to cause unpredictable issues (from ' . $installedVersion . ' to ' . $currentVersion . ')');
 				}
 			} elseif ($versionDiff < 0) {
 				// downgrade attempt, throw exception
-				throw new \OC\HintException('Downgrading is not supported and is likely to cause unpredictable issues (from ' . $installedVersion . ' to ' . $currentVersion . ')');
+				throw new \OCP\HintException('Downgrading is not supported and is likely to cause unpredictable issues (from ' . $installedVersion . ' to ' . $currentVersion . ')');
 			}
 
 			// also check for upgrades for apps (independently from the user)

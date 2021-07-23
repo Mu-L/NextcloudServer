@@ -4,11 +4,12 @@
  * @copyright Copyright (c) 2018 Georg Ehrke
  * @copyright Copyright (c) 2020, leith abdulla (<online-nextcloud@eleith.com>)
  *
+ * @author Chih-Hsuan Yen <yan12125@gmail.com>
  * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author dartcafe <github@dartcafe.de>
  * @author Georg Ehrke <oc.list@georgehrke.com>
  * @author Joas Schilling <coding@schilljs.com>
- * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  * @author leith abdulla <online-nextcloud@eleith.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
@@ -35,7 +36,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 namespace OCA\DAV\CalDAV;
 
 use DateTime;
@@ -1098,6 +1098,14 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 		return $result;
 	}
 
+	/**
+	 * Return all deleted calendar objects by the given principal that are not
+	 * in deleted calendars.
+	 *
+	 * @param string $principalUri
+	 * @return array
+	 * @throws \OCP\DB\Exception
+	 */
 	public function getDeletedCalendarObjectsByPrincipal(string $principalUri): array {
 		$query = $this->db->getQueryBuilder();
 		$query->select(['co.id', 'co.uri', 'co.lastmodified', 'co.etag', 'co.calendarid', 'co.size', 'co.componenttype', 'co.classification', 'co.deleted_at'])
@@ -1105,7 +1113,8 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 			->from('calendarobjects', 'co')
 			->join('co', 'calendars', 'c', $query->expr()->eq('c.id', 'co.calendarid', IQueryBuilder::PARAM_INT))
 			->where($query->expr()->eq('principaluri', $query->createNamedParameter($principalUri)))
-			->andWhere($query->expr()->isNotNull('co.deleted_at'));
+			->andWhere($query->expr()->isNotNull('co.deleted_at'))
+			->andWhere($query->expr()->isNull('c.deleted_at'));
 		$stmt = $query->executeQuery();
 
 		$result = [];

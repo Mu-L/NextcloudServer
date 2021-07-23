@@ -124,11 +124,9 @@ OC.L10N.register(
     "Could not lock path" : "Impossibile bloccare il percorso",
     "Wrong or no update parameter given" : "Parametro fornito non valido o non di aggiornamento",
     "Cannot change permissions for public share links" : "Impossibile cambiare i permessi per i collegamenti di condivisione pubblici",
-    "Sharing sending the password by Nextcloud Talk failed because Nextcloud Talk is not enabled" : "La condivisione tramite invio della password da Nextcloud Talk non è  riuscito poiché Nextcloud Talk non è abilitato",
     "shared by %s" : "condiviso da %s",
     "Download all files" : "Scarica tutti i file",
     "Direct link" : "Collegamento diretto",
-    "Add to your Nextcloud" : "Aggiungi al tuo Nextcloud",
     "Share API is disabled" : "API di condivisione disabilitate",
     "File sharing" : "Condivisione di file",
     "Share will expire tomorrow" : "La condivisione scadrà domani",
@@ -237,8 +235,10 @@ OC.L10N.register(
     "Uploading files" : "Caricamento file",
     "Uploaded files:" : "File caricati:",
     "By uploading files, you agree to the %1$sterms of service%2$s." : "Caricando i file, accetti i %1$stermini del servizio%2$s.",
+    "Add to your Nextcloud" : "Aggiungi al tuo Nextcloud",
     "invalid permissions" : "permessi non validi",
     "Can't change permissions for public share links" : "Impossibile cambiare i permessi per i collegamenti di condivisione pubblici",
+    "Sharing sending the password by Nextcloud Talk failed because Nextcloud Talk is not enabled" : "La condivisione tramite invio della password da Nextcloud Talk non è  riuscito poiché Nextcloud Talk non è abilitato",
     "Name, email, or federated cloud ID …" : "Nome, email o ID di cloud federata..."
 },
 "nplurals=2; plural=(n != 1);");

@@ -7,6 +7,7 @@
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Markus Goetz <markus@woboq.com>
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Richard Steinmetz <richard@steinmetz.cloud>
  * @author Robin Appelman <robin@icewind.nl>
  * @author Robin McCorkell <robin@mccorkell.me.uk>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
@@ -28,7 +29,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 namespace OC\Memcache;
 
 use OCP\ICache;
@@ -86,16 +86,16 @@ class Factory implements ICacheFactory {
 		$missingCacheMessage = 'Memcache {class} not available for {use} cache';
 		$missingCacheHint = 'Is the matching PHP module installed and enabled?';
 		if (!class_exists($localCacheClass) || !$localCacheClass::isAvailable()) {
-			throw new \OC\HintException(strtr($missingCacheMessage, [
+			throw new \OCP\HintException(strtr($missingCacheMessage, [
 				'{class}' => $localCacheClass, '{use}' => 'local'
 			]), $missingCacheHint);
 		}
 		if (!class_exists($distributedCacheClass) || !$distributedCacheClass::isAvailable()) {
-			throw new \OC\HintException(strtr($missingCacheMessage, [
+			throw new \OCP\HintException(strtr($missingCacheMessage, [
 				'{class}' => $distributedCacheClass, '{use}' => 'distributed'
 			]), $missingCacheHint);
 		}
-		if (!($lockingCacheClass && class_exists($distributedCacheClass) && $lockingCacheClass::isAvailable())) {
+		if (!($lockingCacheClass && class_exists($lockingCacheClass) && $lockingCacheClass::isAvailable())) {
 			// don't fallback since the fallback might not be suitable for storing lock
 			$lockingCacheClass = self::NULL_CACHE;
 		}

@@ -10,7 +10,7 @@
  * @author Daniel Kesselberg <mail@danielkesselberg.de>
  * @author Jan-Christoph Borchardt <hey@jancborchardt.net>
  * @author Joas Schilling <coding@schilljs.com>
- * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  * @author Julius Härtl <jus@bitgrid.net>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Maxence Lange <maxence@artificial-owl.com>
@@ -19,6 +19,9 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @author Robin Appelman <robin@icewind.nl>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
+ * @author Samuel <faust64@gmail.com>
+ * @author szaimen <szaimen@e.mail.de>
+ * @author Valdnet <47037905+Valdnet@users.noreply.github.com>
  * @author Vincent Petry <vincent@nextcloud.com>
  *
  * @license AGPL-3.0
@@ -36,12 +39,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 namespace OC\Share20;
 
 use OC\Cache\CappedMemoryCache;
 use OC\Files\Mount\MoveableMount;
-use OC\HintException;
 use OC\Share20\Exception\ProviderException;
 use OCA\Files_Sharing\ISharedStorage;
 use OCP\EventDispatcher\IEventDispatcher;
@@ -50,6 +51,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountManager;
 use OCP\Files\Node;
+use OCP\HintException;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -105,6 +107,8 @@ class Manager implements IManager {
 	private $sharingDisabledForUsersCache;
 	/** @var EventDispatcherInterface */
 	private $legacyDispatcher;
+	/** @var LegacyHooks */
+	private $legacyHooks;
 	/** @var IMailer */
 	private $mailer;
 	/** @var IURLGenerator */
@@ -147,6 +151,9 @@ class Manager implements IManager {
 		$this->rootFolder = $rootFolder;
 		$this->legacyDispatcher = $legacyDispatcher;
 		$this->sharingDisabledForUsersCache = new CappedMemoryCache();
+		// The constructor of LegacyHooks registers the listeners of share events
+		// do not remove if those are not properly migrated
+		$this->legacyHooks = new LegacyHooks($this->legacyDispatcher);
 		$this->mailer = $mailer;
 		$this->urlGenerator = $urlGenerator;
 		$this->defaults = $defaults;

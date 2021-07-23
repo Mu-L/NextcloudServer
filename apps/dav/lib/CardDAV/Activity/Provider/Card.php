@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2021 Joas Schilling <coding@schilljs.com>
  *
@@ -15,14 +16,13 @@ declare(strict_types=1);
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 namespace OCA\DAV\CardDAV\Activity\Provider;
 
 use OCP\Activity\IEvent;
@@ -87,17 +87,17 @@ class Card extends Base {
 		}
 
 		if ($event->getSubject() === self::SUBJECT_ADD) {
-			$subject = $l->t('{actor} created contact {card} in addressbook {addressbook}');
+			$subject = $l->t('{actor} created contact {card} in address book {addressbook}');
 		} elseif ($event->getSubject() === self::SUBJECT_ADD . '_self') {
-			$subject = $l->t('You created contact {card} in addressbook {addressbook}');
+			$subject = $l->t('You created contact {card} in address book {addressbook}');
 		} elseif ($event->getSubject() === self::SUBJECT_DELETE) {
-			$subject = $l->t('{actor} deleted contact {card} from addressbook {addressbook}');
+			$subject = $l->t('{actor} deleted contact {card} from address book {addressbook}');
 		} elseif ($event->getSubject() === self::SUBJECT_DELETE . '_self') {
-			$subject = $l->t('You deleted contact {card} from addressbook {addressbook}');
+			$subject = $l->t('You deleted contact {card} from address book {addressbook}');
 		} elseif ($event->getSubject() === self::SUBJECT_UPDATE) {
-			$subject = $l->t('{actor} updated contact {card} in addressbook {addressbook}');
+			$subject = $l->t('{actor} updated contact {card} in address book {addressbook}');
 		} elseif ($event->getSubject() === self::SUBJECT_UPDATE . '_self') {
-			$subject = $l->t('You updated contact {card} in addressbook {addressbook}');
+			$subject = $l->t('You updated contact {card} in address book {addressbook}');
 		} else {
 			throw new \InvalidArgumentException();
 		}

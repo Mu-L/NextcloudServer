@@ -19,19 +19,17 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 namespace OCA\FederatedFileSharing\OCM;
 
 use OC\AppFramework\Http;
 use OC\Files\Filesystem;
-use OC\HintException;
 use OCA\FederatedFileSharing\AddressHandler;
 use OCA\FederatedFileSharing\FederatedShareProvider;
 use OCA\Files_Sharing\Activity\Providers\RemoteShares;
@@ -49,6 +47,7 @@ use OCP\Federation\ICloudFederationProviderManager;
 use OCP\Federation\ICloudFederationShare;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\NotFoundException;
+use OCP\HintException;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
@@ -56,7 +55,6 @@ use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
-use OCP\Share;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
@@ -177,7 +175,7 @@ class CloudFederationProviderFiles implements ICloudFederationProvider {
 	 *
 	 * @throws ProviderCouldNotAddShareException
 	 * @throws \OCP\AppFramework\QueryException
-	 * @throws \OC\HintException
+	 * @throws HintException
 	 * @since 14.0.0
 	 */
 	public function shareReceived(ICloudFederationShare $share) {
@@ -306,7 +304,7 @@ class CloudFederationProviderFiles implements ICloudFederationProvider {
 	 * @throws ActionNotSupportedException
 	 * @throws AuthenticationFailedException
 	 * @throws BadRequestException
-	 * @throws \OC\HintException
+	 * @throws HintException
 	 * @since 14.0.0
 	 */
 	public function notificationReceived($notificationType, $providerId, array $notification) {
@@ -374,7 +372,7 @@ class CloudFederationProviderFiles implements ICloudFederationProvider {
 	 * @throws ActionNotSupportedException
 	 * @throws AuthenticationFailedException
 	 * @throws BadRequestException
-	 * @throws \OC\HintException
+	 * @throws HintException
 	 */
 	private function shareAccepted($id, array $notification) {
 		if (!$this->isS2SEnabled()) {
@@ -443,7 +441,7 @@ class CloudFederationProviderFiles implements ICloudFederationProvider {
 	 * @throws AuthenticationFailedException
 	 * @throws BadRequestException
 	 * @throws ShareNotFound
-	 * @throws \OC\HintException
+	 * @throws HintException
 	 *
 	 */
 	protected function shareDeclined($id, array $notification) {

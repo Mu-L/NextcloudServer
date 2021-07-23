@@ -9,8 +9,9 @@ declare(strict_types=1);
  * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Georg Ehrke <oc.list@georgehrke.com>
  * @author Joas Schilling <coding@schilljs.com>
- * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
+ * @author Vincent Petry <vincent@nextcloud.com>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -21,14 +22,13 @@ declare(strict_types=1);
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 namespace OCA\Provisioning_API\Controller;
 
 use OC\Group\Manager;
@@ -150,6 +150,20 @@ abstract class AUserData extends OCSController {
 			if ($includeScopes) {
 				$data[IAccountManager::PROPERTY_EMAIL . self::SCOPE_SUFFIX] = $userAccount->getProperty(IAccountManager::PROPERTY_EMAIL)->getScope();
 			}
+
+			$additionalEmails = $additionalEmailScopes = [];
+			$emailCollection = $userAccount->getPropertyCollection(IAccountManager::COLLECTION_EMAIL);
+			foreach ($emailCollection->getProperties() as $property) {
+				$additionalEmails[] = $property->getValue();
+				if ($includeScopes) {
+					$additionalEmailScopes[] = $property->getScope();
+				}
+			}
+			$data[IAccountManager::COLLECTION_EMAIL] = $additionalEmails;
+			if ($includeScopes) {
+				$data[IAccountManager::COLLECTION_EMAIL . self::SCOPE_SUFFIX] = $additionalEmailScopes;
+			}
+
 			$data[IAccountManager::PROPERTY_DISPLAYNAME] = $targetUserObject->getDisplayName();
 			if ($includeScopes) {
 				$data[IAccountManager::PROPERTY_DISPLAYNAME . self::SCOPE_SUFFIX] = $userAccount->getProperty(IAccountManager::PROPERTY_DISPLAYNAME)->getScope();

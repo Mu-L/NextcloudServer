@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Daniel Calviño Sánchez <danxuliu@gmail.com>
  * @author Daniel Kesselberg <mail@danielkesselberg.de>
  * @author Joas Schilling <coding@schilljs.com>
- * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  * @author Julius Härtl <jus@bitgrid.net>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author michag86 <micha_g@arcor.de>
@@ -23,6 +23,7 @@ declare(strict_types=1);
  * @author Thomas Citharel <nextcloud@tcit.fr>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Tom Needham <tom@owncloud.com>
+ * @author Vincent Petry <vincent@nextcloud.com>
  *
  * @license AGPL-3.0
  *
@@ -39,7 +40,6 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 namespace OCA\Provisioning_API\Controller;
 
 use libphonenumber\NumberParseException;
@@ -47,17 +47,19 @@ use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 use OC\Authentication\Token\RemoteWipe;
-use OC\HintException;
 use OC\KnownUser\KnownUserService;
 use OC\User\Backend;
 use OCA\Settings\Mailer\NewUserMailHelper;
 use OCP\Accounts\IAccountManager;
-use OCP\App\IAppManager;
+use OCP\Accounts\IAccountProperty;
+use OCP\Accounts\PropertyDoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSForbiddenException;
 use OCP\AppFramework\OCSController;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\HintException;
 use OCP\IConfig;
 use OCP\IGroup;
 use OCP\IGroupManager;
@@ -67,16 +69,13 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
-use OCP\Security\ISecureRandom;
 use OCP\Security\Events\GenerateSecurePasswordEvent;
-use OCP\EventDispatcher\IEventDispatcher;
+use OCP\Security\ISecureRandom;
 use OCP\User\Backend\ISetDisplayNameBackend;
 use Psr\Log\LoggerInterface;
 
 class UsersController extends AUserData {
 
-	/** @var IAppManager */
-	private $appManager;
 	/** @var IURLGenerator */
 	protected $urlGenerator;
 	/** @var LoggerInterface */
@@ -98,7 +97,6 @@ class UsersController extends AUserData {
 								IRequest $request,
 								IUserManager $userManager,
 								IConfig $config,
-								IAppManager $appManager,
 								IGroupManager $groupManager,
 								IUserSession $userSession,
 								IAccountManager $accountManager,
@@ -119,7 +117,6 @@ class UsersController extends AUserData {
 							$accountManager,
 							$l10nFactory);
 
-		$this->appManager = $appManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
 		$this->l10nFactory = $l10nFactory;
@@ -592,12 +589,99 @@ class UsersController extends AUserData {
 			$permittedFields[] = IAccountManager::PROPERTY_EMAIL;
 		}
 
+		$permittedFields[] = IAccountManager::COLLECTION_EMAIL;
 		$permittedFields[] = IAccountManager::PROPERTY_PHONE;
 		$permittedFields[] = IAccountManager::PROPERTY_ADDRESS;
 		$permittedFields[] = IAccountManager::PROPERTY_WEBSITE;
 		$permittedFields[] = IAccountManager::PROPERTY_TWITTER;
 
 		return new DataResponse($permittedFields);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 * @PasswordConfirmationRequired
+	 *
+	 * @throws OCSException
+	 */
+	public function editUserMultiValue(
+		string $userId,
+		string $collectionName,
+		string $key,
+		string $value
+	): DataResponse {
+		$currentLoggedInUser = $this->userSession->getUser();
+		if ($currentLoggedInUser === null) {
+			throw new OCSException('', OCSController::RESPOND_UNAUTHORISED);
+		}
+
+		$targetUser = $this->userManager->get($userId);
+		if ($targetUser === null) {
+			throw new OCSException('', OCSController::RESPOND_NOT_FOUND);
+		}
+
+		$permittedFields = [];
+		if ($targetUser->getUID() === $currentLoggedInUser->getUID()) {
+			// Editing self (display, email)
+			$permittedFields[] = IAccountManager::COLLECTION_EMAIL;
+			$permittedFields[] = IAccountManager::COLLECTION_EMAIL . self::SCOPE_SUFFIX;
+		} else {
+			// Check if admin / subadmin
+			$subAdminManager = $this->groupManager->getSubAdmin();
+			if ($this->groupManager->isAdmin($currentLoggedInUser->getUID())
+				|| $subAdminManager->isUserAccessible($currentLoggedInUser, $targetUser)) {
+				// They have permissions over the user
+
+				$permittedFields[] = IAccountManager::COLLECTION_EMAIL;
+			} else {
+				// No rights
+				throw new OCSException('', OCSController::RESPOND_NOT_FOUND);
+			}
+		}
+
+		// Check if permitted to edit this field
+		if (!in_array($collectionName, $permittedFields)) {
+			throw new OCSException('', 103);
+		}
+
+		switch ($collectionName) {
+			case IAccountManager::COLLECTION_EMAIL:
+				$userAccount = $this->accountManager->getAccount($targetUser);
+				$mailCollection = $userAccount->getPropertyCollection(IAccountManager::COLLECTION_EMAIL);
+				$mailCollection->removePropertyByValue($key);
+				if ($value !== '') {
+					$mailCollection->addPropertyWithDefaults($value);
+				}
+				$this->accountManager->updateAccount($userAccount);
+				break;
+
+			case IAccountManager::COLLECTION_EMAIL . self::SCOPE_SUFFIX:
+				$userAccount = $this->accountManager->getAccount($targetUser);
+				$mailCollection = $userAccount->getPropertyCollection(IAccountManager::COLLECTION_EMAIL);
+				$targetProperty = null;
+				foreach ($mailCollection->getProperties() as $property) {
+					if ($property->getValue() === $key) {
+						$targetProperty = $property;
+						break;
+					}
+				}
+				if ($targetProperty instanceof IAccountProperty) {
+					try {
+						$targetProperty->setScope($value);
+						$this->accountManager->updateAccount($userAccount);
+					} catch (\InvalidArgumentException $e) {
+						throw new OCSException('', 102);
+					}
+				} else {
+					throw new OCSException('', 102);
+				}
+				break;
+
+			default:
+				throw new OCSException('', 103);
+		}
+		return new DataResponse();
 	}
 
 	/**
@@ -635,6 +719,8 @@ class UsersController extends AUserData {
 
 			$permittedFields[] = IAccountManager::PROPERTY_DISPLAYNAME . self::SCOPE_SUFFIX;
 			$permittedFields[] = IAccountManager::PROPERTY_EMAIL . self::SCOPE_SUFFIX;
+
+			$permittedFields[] = IAccountManager::COLLECTION_EMAIL;
 
 			$permittedFields[] = 'password';
 			if ($this->config->getSystemValue('force_language', false) === false ||
@@ -674,6 +760,7 @@ class UsersController extends AUserData {
 					$permittedFields[] = IAccountManager::PROPERTY_DISPLAYNAME;
 				}
 				$permittedFields[] = IAccountManager::PROPERTY_EMAIL;
+				$permittedFields[] = IAccountManager::COLLECTION_EMAIL;
 				$permittedFields[] = 'password';
 				$permittedFields[] = 'language';
 				$permittedFields[] = 'locale';
@@ -746,24 +833,42 @@ class UsersController extends AUserData {
 					throw new OCSException('', 102);
 				}
 				break;
+			case IAccountManager::COLLECTION_EMAIL:
+				if (filter_var($value, FILTER_VALIDATE_EMAIL) && $value !== $targetUser->getEMailAddress()) {
+					$userAccount = $this->accountManager->getAccount($targetUser);
+					$mailCollection = $userAccount->getPropertyCollection(IAccountManager::COLLECTION_EMAIL);
+					foreach ($mailCollection->getProperties() as $property) {
+						if ($property->getValue() === $value) {
+							break;
+						}
+					}
+					$mailCollection->addPropertyWithDefaults($value);
+					$this->accountManager->updateAccount($userAccount);
+				} else {
+					throw new OCSException('', 102);
+				}
+				break;
 			case IAccountManager::PROPERTY_PHONE:
 			case IAccountManager::PROPERTY_ADDRESS:
 			case IAccountManager::PROPERTY_WEBSITE:
 			case IAccountManager::PROPERTY_TWITTER:
 				$userAccount = $this->accountManager->getAccount($targetUser);
-				$userProperty = $userAccount->getProperty($key);
-				if ($userProperty->getValue() !== $value) {
-					try {
-						$userProperty->setValue($value);
-						$this->accountManager->updateAccount($userAccount);
-
-						if ($userProperty->getName() === IAccountManager::PROPERTY_PHONE) {
-							$this->knownUserService->deleteByContactUserId($targetUser->getUID());
+				try {
+					$userProperty = $userAccount->getProperty($key);
+					if ($userProperty->getValue() !== $value) {
+						try {
+							$userProperty->setValue($value);
+							if ($userProperty->getName() === IAccountManager::PROPERTY_PHONE) {
+								$this->knownUserService->deleteByContactUserId($targetUser->getUID());
+							}
+						} catch (\InvalidArgumentException $e) {
+							throw new OCSException('Invalid ' . $e->getMessage(), 102);
 						}
-					} catch (\InvalidArgumentException $e) {
-						throw new OCSException('Invalid ' . $e->getMessage(), 102);
 					}
+				} catch (PropertyDoesNotExistException $e) {
+					$userAccount->setProperty($key, $value, IAccountManager::SCOPE_PRIVATE, IAccountManager::NOT_VERIFIED);
 				}
+				$this->accountManager->updateAccount($userAccount);
 				break;
 			case IAccountManager::PROPERTY_DISPLAYNAME . self::SCOPE_SUFFIX:
 			case IAccountManager::PROPERTY_EMAIL . self::SCOPE_SUFFIX:

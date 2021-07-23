@@ -44,7 +44,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 namespace OC\Files;
 
 use Icewind\Streams\CallbackWrapper;
@@ -422,7 +421,9 @@ class View {
 	 */
 	public function readfile($path) {
 		$this->assertPathLength($path);
-		@ob_end_clean();
+		if (ob_get_level()) {
+			ob_end_clean();
+		}
 		$handle = $this->fopen($path, 'rb');
 		if ($handle) {
 			$chunkSize = 524288; // 512 kB chunks
@@ -446,7 +447,9 @@ class View {
 	 */
 	public function readfilePart($path, $from, $to) {
 		$this->assertPathLength($path);
-		@ob_end_clean();
+		if (ob_get_level()) {
+			ob_end_clean();
+		}
 		$handle = $this->fopen($path, 'rb');
 		if ($handle) {
 			$chunkSize = 524288; // 512 kB chunks
